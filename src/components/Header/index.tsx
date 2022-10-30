@@ -1,3 +1,10 @@
+import Image from 'next/image';
+import Logo from '../../public/logo.png';
+
 export default function Header(): JSX.Element {
-  return <h1>test</h1>;
+  return (
+    <header>
+      <Image src={Logo} alt="logo" width={30} height={30} />
+    </header>
+  );
 }
