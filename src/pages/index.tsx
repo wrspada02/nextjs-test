@@ -50,8 +50,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
   });
 
-  console.log(postsResponse);
-
   return {
     props: {
       postsPagination: postsResponse,
