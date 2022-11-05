@@ -1,12 +1,12 @@
 :root {
   --backgroundPage: #282C34;
+  --colorTitle: #FFFFFF;
+  --colorSubtitle: #D7D7D7;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: 'Inter', sans-serif;
 }
-
-
-// TODO

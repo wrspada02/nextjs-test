@@ -1,12 +1,15 @@
 import { GetStaticProps } from 'next';
-import Header from '../components/Header';
-
+import ptBR from 'date-fns/locale/pt-BR';
+import { format } from 'date-fns';
 import { getPrismicClient } from '../services/prismic';
 
-import commonStyles from '../styles/common.module.scss';
-import styles from './home.module.scss';
+import Header from '../components/Header';
+import { Cards } from '../components/Cards';
 
-interface Post {
+import styles from './home.module.scss';
+import commonStyles from '../styles/common.module.scss';
+
+export interface Post {
   uid?: string;
   first_publication_date: string | null;
   data: {
@@ -25,13 +28,33 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home(): JSX.Element {
-  return <Header />;
+export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  return (
+    <main className={`${commonStyles.all} ${styles.main}`}>
+      <Header />
+      {postsPagination.results.map(post => (
+        <Cards
+          data={post.data}
+          first_publication_date={post.first_publication_date}
+          uid={post.uid}
+          key={post.uid}
+        />
+      ))}
+    </main>
+  );
 }
 
-// export const getStaticProps = async () => {
-//   // const prismic = getPrismicClient({});
-//   // const postsResponse = await prismic.getByType(TODO);
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const prismic = getPrismicClient({ req: params });
+  const postsResponse = await prismic.getByType('posts', {
+    fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
+  });
 
-//   // TODO
-// };
+  console.log(postsResponse);
+
+  return {
+    props: {
+      postsPagination: postsResponse,
+    },
+  };
+};
