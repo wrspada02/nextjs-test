@@ -20,7 +20,7 @@ export function Cards({
           <li>
             <FiCalendar color="#D7D7D7" />
             <span>
-              {format(new Date(first_publication_date), 'MM/dd/yyyy', {
+              {format(new Date(first_publication_date), 'PP', {
                 locale: ptBR,
               })}
             </span>

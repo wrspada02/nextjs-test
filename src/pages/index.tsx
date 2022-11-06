@@ -1,6 +1,4 @@
 import { GetStaticProps } from 'next';
-import ptBR from 'date-fns/locale/pt-BR';
-import { format } from 'date-fns';
 import { getPrismicClient } from '../services/prismic';
 
 import Header from '../components/Header';
@@ -29,18 +27,31 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  async function handleFetchPaginationContent(): Promise<void> {
+    const newContent = await fetch(postsPagination.next_page, {
+      method: 'GET',
+    });
+  }
+
   return (
-    <main className={`${commonStyles.all} ${styles.main}`}>
-      <Header />
-      {postsPagination.results.map(post => (
-        <Cards
-          data={post.data}
-          first_publication_date={post.first_publication_date}
-          uid={post.uid}
-          key={post.uid}
-        />
-      ))}
-    </main>
+    <>
+      <main className={`${commonStyles.all} ${styles.main}`}>
+        <Header />
+        {postsPagination.results.map(post => (
+          <Cards
+            data={post.data}
+            first_publication_date={post.first_publication_date}
+            uid={post.uid}
+            key={post.uid}
+          />
+        ))}
+        {postsPagination.next_page && (
+          <button onClick={handleFetchPaginationContent} type="button">
+            Carregar mais posts
+          </button>
+        )}
+      </main>
+    </>
   );
 }
 
@@ -48,6 +59,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prismic = getPrismicClient({ req: params });
   const postsResponse = await prismic.getByType('posts', {
     fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
+    pageSize: 2,
   });
 
   return {
