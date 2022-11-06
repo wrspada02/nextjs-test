@@ -1,1 +1,64 @@
-// TODO
+.container {
+    min-height: 100vh;
+    background: var(--backgroundPage);
+
+    header {
+        width: fit-content;
+        padding-left: 20%;
+    }
+
+    img {
+        max-height: 400px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        h1 {
+            color: var(--colorTitle);
+            font-size: 3rem;
+        }
+    
+        ul {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 1rem 0;
+            gap: 1rem;
+            color: var(--colorTitle);
+    
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        section {
+            margin: 2rem 0;
+            max-width: 700px;
+
+            h2 {
+                color: var(--colorTitle);
+                font-size: 2rem;
+            }
+
+            p {
+                margin-top: 1rem;
+                line-height: 1.5rem;
+                font-size: 1rem;
+                color: var(--colorSubtitle);
+            }
+        }
+    }
+
+}
+
+.space {
+    padding: 2rem 0;
+}
