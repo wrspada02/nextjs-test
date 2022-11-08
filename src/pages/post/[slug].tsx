@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { RichText } from 'prismic-dom';
 import ptBR from 'date-fns/locale/pt-BR';
 
+import { useRouter } from 'next/router';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
@@ -34,7 +35,25 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps): JSX.Element {
-  return post.first_publication_date ? (
+  const router = useRouter();
+
+  function handleCalcReadTime(): number {
+    const wordsPerMinute = 200;
+    let totalWordsContent = 0;
+
+    post.data.content.forEach(content => {
+      const paragrapherContent = RichText.asText(content.body);
+      const arrayParagrapher = paragrapherContent.split(' ');
+
+      totalWordsContent += arrayParagrapher.length;
+    });
+
+    return totalWordsContent / wordsPerMinute;
+  }
+
+  return router.isFallback ? (
+    <h3>Carregando...</h3>
+  ) : (
     <section className={styles.container}>
       <Header />
       <img src={post.data.banner.url} alt="logo-content" />
@@ -56,39 +75,40 @@ export default function Post({ post }: PostProps): JSX.Element {
             </li>
             <li>
               <MdOutlineWatchLater color="#D7D7D7" />
-              <span>4min</span>
+              <span>{handleCalcReadTime().toFixed(0)}min</span>
             </li>
           </ul>
         </section>
         <section>
-          {post.data.content.map(mainContent => (
-            <article className={styles.space}>
-              <h2>{mainContent.heading}</h2>
-              <p>{mainContent.body.map(item => item.text)}</p>
+          {post.data.content.map((mainContent, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <article className={styles.space} key={index}>
+              <h2 key={mainContent.heading.length}>{mainContent.heading}</h2>
+              <p key={mainContent.body.length}>
+                {mainContent.body.map(item => item.text)}
+              </p>
             </article>
           ))}
         </section>
       </main>
     </section>
-  ) : (
-    <>Carregando...</>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient({});
-  // const posts = await prismic.getByType();
+  const posts = await prismic.getByType('posts');
 
   return {
     paths: [
       {
         params: {
-          slug: 'em-poucas-palavras-e-seguindo-a-definicao-delespythone',
+          slug: 'como-utilizar-hooks',
         },
       },
       {
         params: {
-          slug: 'um-conjunto-de-ferramentas-javascript-que-adicionou',
+          slug: 'criando-um-app-cra-do-zero',
         },
       },
     ],

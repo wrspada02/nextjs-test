@@ -69,7 +69,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prismic = getPrismicClient({ req: params });
   const postsResponse = await prismic.getByType('posts', {
     fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-    pageSize: 1,
+    pageSize: 3,
   });
 
   return {
